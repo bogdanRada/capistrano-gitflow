@@ -2,8 +2,11 @@ require 'bundler/setup'
 require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
 
+
 RSpec::Core::RakeTask.new(:spec) do |spec|
-  spec.rspec_opts = ['--backtrace', '--fail-fast'] if ENV['DEBUG']
+  default_options = ['--colour']
+  default_options.concat(['--backtrace', '--fail-fast']) if ENV['DEBUG']
+  spec.rspec_opts = default_options
 end
 
 desc 'Default: run the unit tests.'
@@ -16,8 +19,4 @@ task :all do |_t|
   else
     exec('bundle exec rake spec')
   end
-end
-
-if %w(test development).include?(ENV['RAILS_ENV'])
-  load './spec/tasks.rake'
 end
