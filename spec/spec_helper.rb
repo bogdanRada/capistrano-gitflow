@@ -4,12 +4,18 @@ ENV['RAILS_ENV'] = 'test'
 require 'bundler/setup'
 require 'simplecov'
 require 'simplecov-summary'
-load File.join(File.dirname(File.dirname(__FILE__)), 'Rakefile')
+require 'rspec/its'
+
+def root
+  File.dirname(File.dirname(__FILE__))
+end
+
+load File.join(root, 'Rakefile')
 require 'capistrano/gitflow'
 
-# require "codeclimate-test-reporter"
-formatters = [SimpleCov::Formatter::HTMLFormatter]
+Dir.glob(File.join(root, "spec/support/shared_contexts/**/*.rb")).each {|f| require f}
 
+formatters = [SimpleCov::Formatter::HTMLFormatter]
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(formatters)
 

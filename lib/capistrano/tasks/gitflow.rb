@@ -1,6 +1,6 @@
 
 namespace :gitflow do
-  
+
   task :verify_up_to_date do
     gitflow_verify_up_to_date
   end
@@ -25,7 +25,7 @@ namespace :gitflow do
     gitflow_tag_production
   end
 
-  gitflow_callbacks 
+  gitflow_callbacks
 end
 
 namespace :deploy do
@@ -35,4 +35,3 @@ namespace :deploy do
     end
   end
 end
-
