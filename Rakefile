@@ -1,47 +1,23 @@
-require 'rubygems'
-require 'rake'
+require 'bundler/setup'
+require 'bundler/gem_tasks'
+require 'rspec/core/rake_task'
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "capistrano-gitflow"
-    gem.summary = %Q{Capistrano recipe for a deployment workflow based on git tags }
-    gem.description = %Q{Capistrano recipe for a deployment workflow based on git tags}
-    gem.email = "josh@technicalpickles.com"
-    gem.homepage = "http://github.com/technicalpickles/capistrano-gitflow"
-    gem.authors = ["Joshua Nichols"]
-    gem.add_dependency "capistrano"
-    gem.add_dependency "stringex"
-    gem.add_development_dependency "rspec", ">= 1.2.9"
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+RSpec::Core::RakeTask.new(:spec) do |spec|
+  spec.rspec_opts = ['--backtrace', '--fail-fast'] if ENV['DEBUG']
+end
+
+desc 'Default: run the unit tests.'
+task default: [:all]
+
+desc 'Test the plugin under all supported Rails versions.'
+task :all do |_t|
+  if ENV['TRAVIS']
+    exec('bundle exec rake  spec && bundle exec rake coveralls:push')
+  else
+    exec('bundle exec rake spec')
   end
-  Jeweler::GemcutterTasks.new
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
 
-require 'spec/rake/spectask'
-Spec::Rake::SpecTask.new(:spec) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.spec_files = FileList['spec/**/*_spec.rb']
-end
-
-Spec::Rake::SpecTask.new(:rcov) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.pattern = 'spec/**/*_spec.rb'
-  spec.rcov = true
-end
-
-task :spec => :check_dependencies
-
-task :default => :spec
-
-require 'rake/rdoctask'
-Rake::RDocTask.new do |rdoc|
-  version = File.exist?('VERSION') ? File.read('VERSION') : ""
-
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "gitflow #{version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
+if %w(test development).include?(ENV['RAILS_ENV'])
+  load './spec/tasks.rake'
 end
