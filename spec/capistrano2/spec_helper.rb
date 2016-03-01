@@ -5,23 +5,13 @@ require 'bundler/setup'
 require 'rake'
 require 'simplecov'
 require 'simplecov-summary'
-require 'rspec/its'
 
-require 'capistrano/all'
-require 'capistrano/setup'
-require 'capistrano/deploy'
-require 'capistrano/gitflow'
-
-# Loads custom tasks from `lib/capistrano/tasks' if you have any defined.
-Dir.glob('lib/capistrano/tasks/*.rake').each { |r| import r }
 
 def root
-  File.dirname(File.dirname(__FILE__))
+  File.dirname(File.dirname(File.dirname(__FILE__)))
 end
 
- require 'mocha/api'
-
-Dir.glob(File.join(root, "spec/support/shared_contexts/**/*.rb")).each {|f| require f}
+ENV['BUNDLE_GEMFILE'] = File.join(root, 'spec', 'capistrano2', 'Gemfile')
 
 formatters = [SimpleCov::Formatter::HTMLFormatter]
 
@@ -42,11 +32,12 @@ end
 
 RSpec.configure do |config|
   require 'rspec/expectations'
+  require 'rspec/mocks'
   config.include RSpec::Matchers
   config.raise_errors_for_deprecations!
-  config.mock_framework = :mocha
+  config.mock_framework = :rspec
   #config.order = 'random'
-  #config.mock_with :mocha
+  config.mock_with :rspec
 
   config.after(:suite) do
     if SimpleCov.running

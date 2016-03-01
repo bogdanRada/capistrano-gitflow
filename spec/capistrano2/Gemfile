@@ -1,0 +1,9 @@
+source 'http://rubygems.org'
+
+gem 'capistrano', '2.15.5'
+gem 'capistrano-gitflow', path: File.expand_path(File.dirname(File.dirname(File.dirname(__FILE__))))
+gem 'rake'
+
+gem 'rspec'
+gem 'simplecov'
+gem 'simplecov-summary'
